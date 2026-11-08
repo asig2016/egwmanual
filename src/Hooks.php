@@ -43,14 +43,16 @@ class Hooks
 				return;
 			}
 			$url = Manual::link($page, '', $lang === $reader ? null : $lang);
-			Api\Translation::add_app(Manual::APP);	// the menu is built in the application's context
-			$GLOBALS['egw']->framework->sidebox($app, lang('Manual'), [
+			// the menu is built in the application's context: no add_app() of egwmanual there, its phrases would
+			// override the application's own ("Manual" is a manual booking in acdms) - only "common" rows are used
+			$title = lang(Manual::APP);
+			$GLOBALS['egw']->framework->sidebox($app, $title, [
 				'manual' => [
-					'text' => 'Manual',
+					'text' => $title,
 					'link' => "javascript:egw_openWindowCentered2('".$url."','egwmanual',920,850,'yes')",
 					'icon' => Manual::APP.'/navbar',	// the framework resolves a bare name in the application's own images
 					'app'  => Manual::APP,
-					'hint' => 'The manual of this application, as a popup window',
+					'hint' => lang('The manual of this application, as a popup window'),
 				],
 				'icon' => Manual::APP.'/navbar',
 				'sendToBottom' => true,
@@ -75,10 +77,10 @@ class Hooks
 		{
 			return;
 		}
-		Api\Translation::add_app(Manual::APP);
+		// the title is egwmanual's "common" row, see sidebox_all()
 		$url = Api\Egw::link('/index.php', ['menuaction' => Manual::UI.'.page', 'active' => 1], false);
 		Api\Framework::add_topmenu_item(Manual::APP, "javascript:egw_openWindowCentered2('$url','egwmanual',920,850,'yes')",
-			lang('Manual'), '', 'navbar');
+			lang(Manual::APP), '', 'navbar');
 	}
 
 	/**
