@@ -17,17 +17,19 @@ Mit eigenen Kapiteln können Sie:
    Der Ordner und alles darin muss einem Redakteur oder root gehören. Kein anderer Benutzer und keine andere Gruppe darf
    hineinschreiben können, weder über die Rechte des Ordners noch über eine erweiterte ACL des Ordners oder eines
    Ordners darüber.
-3. Öffnen Sie **Admin › Handbuch › App-Konfiguration** und füllen Sie aus:
+3. Öffnen Sie **Admin › Handbuch › App-Konfiguration**, kreuzen Sie **Eigene Kapitel aus einem Ordner des Dateimanagers
+   verwenden** an und füllen Sie aus:
 
 ![Die Konfiguration des Handbuchs](images/egwmanual-config.png)
 
 | Feld | Was Sie eintragen |
 |---|---|
+| Eigene Kapitel aus einem Ordner des Dateimanagers verwenden | Ankreuzen. Standardmäßig ist es aus: Dann wird der Ordner weder geprüft noch gelesen, und seine beiden Felder sind ausgegraut. |
 | Sprache des Handbuchs, wenn die Sprache des Benutzers keine Kapitel hat | Die Sprache, in der die meisten Kapitel geschrieben sind. |
 | Ordner der eigenen Kapitel (Dateimanager) | Den Ordner aus Schritt 1, zum Beispiel `/manual`. |
 | Redakteure: nur diese Gruppe darf in den Ordner schreiben können | Die Gruppe der Redakteure. Leer bedeutet Admins. |
 
-Die Konfiguration wird nur gespeichert, wenn der Ordner die Prüfung aus Schritt 2 besteht. Die Meldung nennt jede
+Eingeschaltet wird die Konfiguration nur gespeichert, wenn der Ordner die Prüfung aus Schritt 2 besteht. Die Meldung nennt jede
 Datei und jeden Ordner, die sie nicht bestehen, und den Grund.
 
 > Jeder Benutzer des Handbuchs sieht alle eigenen Kapitel der Anwendungen, die er benutzen darf, unabhängig von seinen
@@ -122,6 +124,7 @@ Ein solcher Block kann auch in einem eigenen Kapitel stehen. Er wird nur für Be
 
 | Was Sie sehen | Grund | Was Sie tun |
 |---|---|---|
+| Gar kein eigenes Kapitel, und keine Warnung | **Eigene Kapitel aus einem Ordner des Dateimanagers verwenden** ist nicht angekreuzt. | Ankreuzen und die Konfiguration speichern. |
 | Eine rote Zeile oben im Fenster des Handbuchs (nur Administratoren) | Außer den Redakteuren kann noch jemand in den Ordner schreiben. Alle eigenen Kapitel sind abgeschaltet. | Korrigieren Sie die Rechte, die die Zeile nennt. Die Kapitel erscheinen nach spätestens fünf Minuten wieder, sofort nach erneutem Speichern der Konfiguration. |
 | Ein Kapitel fehlt | Falscher Ordner (`<lang>/<app>/`), ein Name mit Großbuchstaben, Leerzeichen oder Umlauten, oder der Benutzer hat die Anwendung nicht. | Benennen Sie die Datei um oder verschieben Sie sie. |
 | Ein ersetztes Kapitel zeigt den ursprünglichen Text | Die Datei liegt im Ordner einer anderen Anwendung als das ursprüngliche Kapitel. | Verschieben Sie sie in den Ordner der Anwendung des Kapitels. |

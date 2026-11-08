@@ -29,3 +29,7 @@ the folder holds more than %1 entries	egwmanual	el	Ο φάκελος περιέ�
 %1 is writable by everybody	egwmanual	el	Στο %1 μπορούν να γράψουν όλοι
 %1 is writable by the group %2	egwmanual	el	Στο %1 μπορεί να γράψει η ομάδα %2
 %1 grants %2 write access	egwmanual	el	Το %1 δίνει δικαίωμα εγγραφής στον %2
+open the user guide of this screen	egwmanual	el	Ανοίγει τον οδηγό χρήσης αυτής της οθόνης
+select folder	egwmanual	el	Επιλέξτε φάκελο
+use custom chapters from a folder of the filemanager	egwmanual	el	Χρήση δικών σας κεφαλαίων από φάκελο του Διαχειριστή αρχείων
+the custom chapters need a folder	egwmanual	el	Τα δικά σας κεφάλαια χρειάζονται φάκελο

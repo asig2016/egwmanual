@@ -16,17 +16,18 @@ With custom chapters you can:
 2. Give write access to this folder **only** to the editors of the manual (by default the group Admins). The folder
    and everything in it has to belong to an editor or to root. No other user or group may write into it, neither
    through the rights of the folder nor through an extended ACL of the folder or of a folder above it.
-3. Open **Admin › Manual › App configuration** and fill in:
+3. Open **Admin › Manual › App configuration**, tick **Use custom chapters from a folder of the filemanager** and fill in:
 
 ![The configuration of the manual](images/egwmanual-config.png)
 
 | Field | What to enter |
 |---|---|
+| Use custom chapters from a folder of the filemanager | Tick it. It is off by default: then the folder is neither checked nor read, and its two fields are greyed out. |
 | Language of the manual when the user's own language has no chapters | The language most of your chapters are written in. |
 | Folder of the custom chapters (filemanager) | The folder of step 1, for example `/manual`. |
 | Editors: only this group may be able to write into the folder | The group of the editors. Empty means Admins. |
 
-The configuration is only saved if the folder passes the check of step 2. The message names every file or folder
+Switched on, the configuration is only saved if the folder passes the check of step 2. The message names every file or folder
 that fails it and why.
 
 > Every user of the manual sees all custom chapters of the applications he may use, whatever his rights in the
@@ -117,6 +118,7 @@ Such a block may also be used in a custom chapter. It is filled in only for user
 
 | What you see | Reason | What to do |
 |---|---|---|
+| No custom chapter at all, and no warning | **Use custom chapters from a folder of the filemanager** is not ticked. | Tick it and save the configuration. |
 | A red line at the top of the manual window (administrators only) | Somebody else than the editors can write into the folder. All custom chapters are switched off. | Fix the rights the line names. The chapters return within five minutes, at once after saving the configuration again. |
 | A chapter is missing | Wrong folder (`<lang>/<app>/`), a name with capitals, spaces or Greek letters, or the user does not have the application. | Rename or move the file. |
 | A replaced chapter shows the original text | The file is in the folder of another application than the original chapter. | Move it into the folder of the chapter's application. |

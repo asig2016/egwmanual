@@ -76,13 +76,26 @@ class Custom
 	/**
 	 * The folder of the site configuration, normalised; null if none or not an absolute path
 	 */
+	/**
+	 * The folder of the site configuration, normalised; null if the custom chapters are switched off (the default),
+	 * no folder is set or it is not an absolute path
+	 */
 	public function folder() : ?string
 	{
 		if ($this->folder === null)
 		{
-			$this->folder = (string)(Api\Config::read(Manual::APP)['custom_folder'] ?? '');
+			$config = Api\Config::read(Manual::APP);
+			$this->folder = self::switchedOn($config['custom_enabled'] ?? null) ? (string)($config['custom_folder'] ?? '') : '';
 		}
 		return self::normalise($this->folder);
+	}
+
+	/**
+	 * The checkbox "Use custom chapters": off unless it was ticked
+	 */
+	public static function switchedOn($value) : bool
+	{
+		return !empty($value) && !in_array(strtolower((string)$value), ['false', '0', 'off', 'no'], true);
 	}
 
 	public static function normalise(string $folder) : ?string

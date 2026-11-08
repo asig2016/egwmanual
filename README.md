@@ -39,8 +39,9 @@ names in their own language).
 
 | Setting | Meaning |
 |---|---|
+| Use custom chapters from a folder of the filemanager | Off by default: the folder is then neither checked nor read. |
 | Language of the manual when the user's own language has no chapters | Fallback language. |
-| Folder of the custom chapters (filemanager) | e.g. `/manual`; empty: no custom chapters. |
+| Folder of the custom chapters (filemanager) | e.g. `/manual`, required when switched on. |
 | Editors | The group allowed to write into that folder; empty means Admins. |
 
 Layout of the custom folder:
@@ -63,7 +64,7 @@ apply:
   adds a fixed set of tags. Raw HTML shows as text. Links may only go to other chapters, `#anchors` and
   `http(s)://` (opened with `noopener noreferrer`). Pictures come only from the application's own manual folder,
   the custom folder, or as image `data:` URLs. Pictures from other sites are dropped, so readers can't be tracked.
-- **Custom chapters are read as root** (every user of the manual sees them, whatever their filemanager rights).
+- **Custom chapters are off by default.** Switched on, they are **read as root** (every user of the manual sees them, whatever their filemanager rights).
   So the trust boundary is who can write the folder. `src/Security.php` checks it when the configuration is saved
   and again at least every 5 minutes. The folder must be a plain folder of the database filesystem (no symlink, no
   other mount). Every entry must belong to root or an editor, may not be world-writable, may be group-writable only

@@ -2,7 +2,7 @@
 <!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
 <!-- egwmanual: site configuration (Hooks::config / config_validate) -->
 <overlay>
-	<template id="egwmanual.config" template="" lang="" group="0" version="26.0.001">
+	<template id="egwmanual.config" template="" lang="" group="0" version="26.0.003">
 		<grid width="100%" class="admin-config egwGridView_grid">
 			<columns>
 				<column width="40%"/>
@@ -14,15 +14,30 @@
 					<et2-select id="newsettings[fallback_lang]" search="true"/>
 				</row>
 				<row>
+					<et2-description value="Use custom chapters from a folder of the filemanager" label="%s:"/>
+					<!-- off by default: without it the folder below is neither checked nor read -->
+					<et2-checkbox id="newsettings[custom_enabled]" onchange="const on = !!widget.checked; const root = widget.getRoot(); for (const id of ['newsettings[custom_folder]', 'custom_folder_select', 'newsettings[editors_group]']) { const w = root.getWidgetById(id); if (w) w.disabled = !on; }"/>
+				</row>
+				<row>
 					<et2-description value="Folder of the custom chapters (filemanager)" label="%s:"/>
-					<et2-vfs-path id="newsettings[custom_folder]"/>
+					<!-- the path, or a folder chosen in the filemanager dialog (it writes its choice into the path) -->
+					<et2-hbox>
+						<et2-vfs-path id="newsettings[custom_folder]" style="flex: 1 1 auto; min-width: 0;" disabled="!@newsettings[custom_enabled]"/>
+						<et2-vfs-select id="custom_folder_select" mode="select-dir" disabled="!@newsettings[custom_enabled]" dialogTitle="Select folder" statustext="Select folder" style="flex: 0 0 auto;"
+							onchange="const f = widget.getRoot().getWidgetById('newsettings[custom_folder]'); const v = Array.isArray(widget.value) ? widget.value[0] : widget.value; if (f &amp;&amp; v) f.set_value(typeof v === 'object' ? v.path : v);"/>
+					</et2-hbox>
 				</row>
 				<row>
 					<et2-description value="Editors: only this group may be able to write into the folder" label="%s:"/>
-					<et2-select-account id="newsettings[editors_group]" accountType="groups" multiple="false" emptyLabel="Admins"/>
+					<et2-select-account id="newsettings[editors_group]" accountType="groups" multiple="false" emptyLabel="Admins" disabled="!@newsettings[custom_enabled]"/>
 				</row>
 				<row>
-					<et2-description span="all" class="egwmanual_config_help" value="Layout of the folder: &lt;lang&gt;/&lt;app&gt;/&lt;chapter&gt;.md is a new chapter or replaces the shipped chapter of that name (an empty file hides it); &lt;lang&gt;/&lt;app&gt;/&lt;chapter&gt;.append.md adds text to the chapter; &lt;lang&gt;/&lt;app&gt;/images/ holds the pictures (png, jpeg, gif, webp). &lt;app&gt; is the name of an application or general. The custom chapters are shown to every user of the manual, and are not used at all while somebody else than the editors may write into the folder."/>
+					<et2-hbox span="all" class="egwmanual_config_helprow">
+						<et2-description class="egwmanual_config_help" value="Layout of the folder: &lt;lang&gt;/&lt;app&gt;/&lt;chapter&gt;.md is a new chapter or replaces the shipped chapter of that name (an empty file hides it); &lt;lang&gt;/&lt;app&gt;/&lt;chapter&gt;.append.md adds text to the chapter; &lt;lang&gt;/&lt;app&gt;/images/ holds the pictures (png, jpeg, gif, webp). &lt;app&gt; is the name of an application or general. The custom chapters are shown to every user of the manual, and are not used at all while somebody else than the editors may write into the folder."/>
+						<et2-button label="Help" image="question-circle" noSubmit="true" class="egwmanual_config_helpbutton"
+							statustext="Open the user guide of this screen"
+							onclick="egw.openPopup(egw.link('/index.php', {menuaction: 'egwmanual.EGroupware\\Egwmanual\\Ui.page', page: '01-manual-custom-chapters'}), 920, 850, 'egwmanual'); return false;"/>
+					</et2-hbox>
 				</row>
 			</rows>
 		</grid>

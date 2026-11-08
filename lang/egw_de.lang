@@ -29,3 +29,7 @@ the folder holds more than %1 entries	egwmanual	de	Der Ordner enthält mehr als 
 %1 is writable by everybody	egwmanual	de	%1 ist für alle beschreibbar
 %1 is writable by the group %2	egwmanual	de	%1 ist für die Gruppe %2 beschreibbar
 %1 grants %2 write access	egwmanual	de	%1 gibt %2 Schreibrecht
+open the user guide of this screen	egwmanual	de	Öffnet die Anleitung zu dieser Maske
+select folder	egwmanual	de	Ordner auswählen
+use custom chapters from a folder of the filemanager	egwmanual	de	Eigene Kapitel aus einem Ordner des Dateimanagers verwenden
+the custom chapters need a folder	egwmanual	de	Die eigenen Kapitel brauchen einen Ordner

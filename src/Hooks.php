@@ -133,9 +133,14 @@ class Hooks
 		{
 			$errors[] = lang('The editors have to be a group');
 		}
-		if (trim((string)($data['custom_folder'] ?? '')) !== '')
+		// the folder only counts while the custom chapters are switched on (off by default)
+		if (Custom::switchedOn($data['custom_enabled'] ?? null))
 		{
-			if (($folder = Custom::normalise((string)$data['custom_folder'])) === null)
+			if (trim((string)($data['custom_folder'] ?? '')) === '')
+			{
+				$errors[] = lang('The custom chapters need a folder');
+			}
+			elseif (($folder = Custom::normalise((string)$data['custom_folder'])) === null)
 			{
 				$errors[] = lang('The folder has to be an absolute path');
 			}
