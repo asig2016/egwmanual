@@ -171,7 +171,71 @@ class Chapters
 			}
 		}
 		ksort($index, SORT_STRING);
-		return self::$index[$key] = $index;
+		return self::$index[$key] = self::parents($index, $lang);
+	}
+
+	/**
+	 * A chapter's first line "<!-- parent: <chapter> -->" makes it a sub-chapter of that chapter
+	 *
+	 * Only a parent of the same group (application or "general") counts; a missing parent, another group's, or a
+	 * loop (a chapter below itself) leaves the chapter at the top of its group.
+	 *
+	 * @return array the index with "parent" (chapter name or null) in every entry
+	 */
+	protected static function parents(array $index, string $lang) : array
+	{
+		foreach ($index as $page => &$entry)
+		{
+			$parent = self::marker($entry, $lang);
+			$entry['parent'] = $parent !== null && $parent !== $page && ($index[$parent]['group'] ?? null) === $entry['group'] ? $parent : null;
+		}
+		unset($entry);
+		foreach (array_keys($index) as $page)
+		{
+			// up the chain: back at the start is a loop, it is cut here
+			for ($up = $index[$page]['parent'], $seen = [$page => true]; $up !== null; $up = $index[$up]['parent'] ?? null)
+			{
+				if (isset($seen[$up]))
+				{
+					error_log(__METHOD__."('$lang') chapter $page: its parents form a loop, shown at the top of its group");
+					$index[$page]['parent'] = null;
+					break;
+				}
+				$seen[$up] = true;
+			}
+		}
+		return $index;
+	}
+
+	/** the parent marker, the chapter's first line */
+	const PARENT_MARKER = '/^\x{FEFF}?[ \t]*<!--\s*parent:\s*([a-z0-9][a-z0-9-]*)\s*-->[ \t]*(?:\r?\n|$)/u';
+
+	/**
+	 * The parent a chapter names on its first line, null if none
+	 */
+	protected static function marker(array $entry, string $lang) : ?string
+	{
+		if ($entry['custom'])
+		{
+			$first = (string)Custom::get()->read($lang, $entry['custom']);
+		}
+		else
+		{
+			$fp = @fopen($entry['file'], 'r');
+			$first = $fp ? (string)fgets($fp, 512) : '';
+			if ($fp) fclose($fp);
+		}
+		return preg_match(self::PARENT_MARKER, $first, $m) ? $m[1] : null;
+	}
+
+	/**
+	 * The sub-chapters of a chapter, in the order of their names
+	 *
+	 * @return string[]
+	 */
+	public static function children(string $page, string $lang) : array
+	{
+		return array_keys(array_filter(self::index($lang), fn($entry) => $entry['parent'] === $page));
 	}
 
 	public static function exists(string $page, string $lang) : bool
@@ -198,10 +262,15 @@ class Chapters
 		}
 		if ($entry['custom'])
 		{
-			return Custom::get()->read($lang, $entry['custom']);
+			$content = Custom::get()->read($lang, $entry['custom']);
 		}
-		$content = @file_get_contents($entry['file'], false, null, 0, Custom::MAX_MD + 1);
-		return is_string($content) && strlen($content) <= Custom::MAX_MD ? $content : null;
+		else
+		{
+			$content = @file_get_contents($entry['file'], false, null, 0, Custom::MAX_MD + 1);
+			$content = is_string($content) && strlen($content) <= Custom::MAX_MD ? $content : null;
+		}
+		// the parent marker is for the chapter list, not the text
+		return $content === null ? null : preg_replace(self::PARENT_MARKER, '', $content, 1);
 	}
 
 	/**
@@ -356,16 +425,49 @@ class Chapters
 	 */
 	public static function tree(string $lang, string $current = '') : array
 	{
-		$groups = [];
+		$index = self::index($lang);
+		// the parents of the chapter shown start open
+		$open = [];
+		for ($up = $index[$current]['parent'] ?? null; $up !== null && !isset($open[$up]); $up = $index[$up]['parent'] ?? null)
+		{
+			$open[$up] = true;
+		}
+		$nodes = [];
 		foreach (self::pages($lang) as $page => $title)
 		{
-			$entry = self::index($lang)[$page];
-			$groups[$entry['group']][] = [
+			$entry = $index[$page];
+			$nodes[$page] = [
 				'value' => $page,
 				'label' => $title,
 				'title' => $title,
 				'class' => $entry['source'] !== 'shipped' || $entry['append'] ? 'egwmanual_local' : '',
 			];
+			if (isset($open[$page]))
+			{
+				$nodes[$page]['open'] = true;
+			}
+		}
+		// sub-chapters below their parent (the parents() of index() made sure there is no loop), deepest first
+		$depth = static function(string $page) use ($index) : int {
+			for ($n = 0, $up = $index[$page]['parent']; $up !== null; $up = $index[$up]['parent'], $n++);
+			return $n;
+		};
+		$pages = array_keys($nodes);
+		usort($pages, fn($a, $b) => $depth($b) <=> $depth($a) ?: strcmp($b, $a));
+		foreach ($pages as $page)
+		{
+			if (($parent = $index[$page]['parent']) !== null)
+			{
+				// names descending, each put first: the sub-chapters end up in ascending order
+				$nodes[$parent]['children'] ??= [];
+				array_unshift($nodes[$parent]['children'], $nodes[$page]);
+				unset($nodes[$page]);
+			}
+		}
+		$groups = [];
+		foreach ($nodes as $page => $node)
+		{
+			$groups[$index[$page]['group']][] = $node;
 		}
 		if (isset($groups[Manual::GENERAL]))
 		{

@@ -22,7 +22,7 @@ a language it exists in.
 
 | Part | What it does |
 |---|---|
-| Chapter list (left) | One entry per application, its chapters below. A click on a chapter opens it. **General** holds the chapters that belong to no application. |
+| Chapter list (left) | One entry per application, its chapters below. A click on a chapter opens it. **General** holds the chapters that belong to no application. A chapter with sub-chapters has an arrow that opens them. |
 | Show or hide the chapter list (first button) | Hides the list to give the chapter more room. The manual remembers your choice. |
 | Back / Forward (arrows) | Moves between the chapters you have opened, like a web browser. |
 | Language (top right) | Shows the manual in another language. The same chapter opens if it exists in that language, otherwise the first chapter of the same application. The list offers only languages that have chapters. |

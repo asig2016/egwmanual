@@ -86,6 +86,12 @@ HTML in einem Kapitel erscheint als Text und wird nie ausgeführt. Links anderer
 erscheinen als einfacher Text. Bilder von anderen Webseiten werden nicht angezeigt: Die Webseite könnte sonst sehen,
 wer welches Kapitel liest.
 
+**Unterkapitel:** Ein Kapitel, dessen erste Zeile `<!-- parent: 40-elegxos -->` lautet, steht in der Liste unter dem
+Kapitel `40-elegxos` (derselben Anwendung oder von `general`). Unterkapitel können eigene Unterkapitel haben. Ohne diese
+Zeile, oder wenn es das übergeordnete Kapitel nicht gibt, bleibt das Kapitel auf der obersten Ebene seiner Anwendung. Die
+Zeile erscheint nicht im Text. Ein kurzes Kapitel, das nur seine Unterkapitel vorstellt, gruppiert Kapitel nach Themen,
+auch unter `general`.
+
 Der Anker eines Abschnitts entsteht wie auf GitHub: Kleinbuchstaben, Leerzeichen werden zu Bindestrichen, Satzzeichen
 entfallen (`## 2. Wer darf ändern` → `2-wer-darf-ändern`).
 

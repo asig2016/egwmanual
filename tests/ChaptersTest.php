@@ -191,6 +191,58 @@ class ChaptersTest extends \PHPUnit\Framework\TestCase
 		}
 	}
 
+	/**
+	 * "<!-- parent: <chapter> -->" on the first line makes a sub-chapter: nested in the list, invisible in the text
+	 */
+	public function testSubChapters() : void
+	{
+		$app = self::APP;
+		// a shipped chapter can name its parent too
+		file_put_contents($this->dir.'/99-zz-allo.md', "<!-- parent: 98-zz-dokimi -->\n# 99. Άλλο\n\nκείμενο\n");
+		$this->custom(['el' => [
+			"$app/50-zz-teil.md" => "# 50. Ενότητα\n\nεισαγωγή\n",
+			"$app/50-zz-teil-01.md" => "<!-- parent: 50-zz-teil -->\n# 50.1 Πρώτο\n\nα\n",
+			"$app/50-zz-teil-02.md" => "<!-- parent: 50-zz-teil -->\n# 50.2 Δεύτερο\n",
+			"$app/50-zz-teil-02-a.md" => "<!-- parent: 50-zz-teil-02 -->\n# 50.2.α Βαθύτερα\n",
+			"$app/60-zz-missing.md" => "<!-- parent: 59-zz-nope -->\n# 60\n",
+			"$app/61-zz-loop-a.md" => "<!-- parent: 61-zz-loop-b -->\n# 61 α\n",
+			"$app/61-zz-loop-b.md" => "<!-- parent: 61-zz-loop-a -->\n# 61 β\n",
+			"$app/62-zz-self.md" => "<!-- parent: 62-zz-self -->\n# 62\n",
+			"$app/63-zz-later.md" => "# 63\n\n<!-- parent: 50-zz-teil -->\n",	// not on the first line: no marker
+			'general/70-zz-other.md' => "<!-- parent: 50-zz-teil -->\n# 70\n",	// another group's chapter
+		]]);
+		$index = Chapters::index('el');
+		$this->assertSame('98-zz-dokimi', $index['99-zz-allo']['parent'], 'shipped');
+		$this->assertSame('50-zz-teil', $index['50-zz-teil-01']['parent']);
+		$this->assertSame('50-zz-teil-02', $index['50-zz-teil-02-a']['parent']);
+		$this->assertNull($index['60-zz-missing']['parent'], 'missing parent');
+		$this->assertNull($index['62-zz-self']['parent'], 'itself');
+		$this->assertNull($index['63-zz-later']['parent'], 'only the first line');
+		$this->assertNull($index['70-zz-other']['parent'], 'another group');
+		$this->assertSame(1, count(array_filter([$index['61-zz-loop-a']['parent'], $index['61-zz-loop-b']['parent']])), 'a loop is cut once');
+		$this->assertSame(['50-zz-teil-01', '50-zz-teil-02'], Chapters::children('50-zz-teil', 'el'));
+
+		// the text: no marker, the title from the first heading
+		$this->assertSame('50.1 Πρώτο', Chapters::title('50-zz-teil-01', 'el'));
+		$html = Manual::html('50-zz-teil-01', 'el');
+		$this->assertStringNotContainsString('parent', $html);
+		$this->assertStringStartsWith('<h1', $html);
+		$this->assertStringNotContainsString('parent', Manual::html('99-zz-allo', 'el'));
+
+		// the list: nested in name order, the path to the chapter shown open
+		$groups = array_column(Chapters::tree('el', '50-zz-teil-02-a')['children'], null, 'value');
+		$top = array_column($groups['app:'.$app]['children'], null, 'value');
+		$this->assertArrayNotHasKey('50-zz-teil-01', $top);
+		$this->assertSame(['50-zz-teil-01', '50-zz-teil-02'], array_column($top['50-zz-teil']['children'], 'value'));
+		$this->assertTrue($top['50-zz-teil']['open']);
+		$second = $top['50-zz-teil']['children'][1];
+		$this->assertTrue($second['open']);
+		$this->assertSame(['50-zz-teil-02-a'], array_column($second['children'], 'value'));
+		$this->assertArrayNotHasKey('open', $top['50-zz-teil']['children'][0], 'a sibling stays closed');
+		$this->assertSame(['99-zz-allo'], array_column($top['98-zz-dokimi']['children'], 'value'));
+		$this->assertArrayHasKey('70-zz-other', array_column($groups['app:general']['children'], null, 'value'));
+	}
+
 	public function testSplitIgnoresCode() : void
 	{
 		[$before, $after] = Chapters::split("# T\n\n## A\n\n```\n## B\n```\n\n## C\n", 'a');

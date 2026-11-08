@@ -11,6 +11,8 @@ administrators complete it with their own chapters from the filemanager.
   written in the user's language, it opens in one it exists in.
 - **Custom chapters** from a filemanager folder: add chapters (also for applications without a manual), replace or
   hide shipped ones, or **append** your organisation's text to a chapter, at its end or after a given section.
+- **Sub-chapters**: a chapter whose first line is `<!-- parent: <chapter> -->` is listed below that chapter, shipped or
+  custom; short section chapters group chapters by topic, also under General.
 - **Live parts**: an application can fill tables of a chapter from its own setup (statuses, types …).
 - **No dependencies** besides the EGroupware API. Applications don't depend on egwmanual to ship chapters; only
   their Help buttons need it.

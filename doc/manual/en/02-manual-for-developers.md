@@ -14,6 +14,8 @@ egwmanual for this, only its Help buttons need it.
 - One folder per language (`en`, `de`, `el` …). A translation has the same file name in the other language's folder.
 - Chapter names: lower-case letters, digits and hyphens, starting with a number, for example
   `40-myapp-guide-00-basics`. They are listed in the order of their names.
+- A first line `<!-- parent: <chapter> -->` lists the chapter below another chapter of the application (sub-chapter),
+  see [Custom chapters](01-manual-custom-chapters.md#3-writing-a-chapter).
 - Chapter names are global: the Help buttons link to them by name. Choose a prefix of the application, so that no other
   application uses the same name (if two do, the first application in alphabetical order wins).
 - The chapters are found on the next request; there is no registration and no cache to clear.

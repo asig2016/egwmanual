@@ -22,7 +22,7 @@ Das Handbuch öffnet sich in einem eigenen Fenster und in Ihrer Sprache. Gibt es
 
 | Teil | Was er tut |
 |---|---|
-| Kapitelliste (links) | Ein Eintrag je Anwendung, darunter ihre Kapitel. Ein Klick auf ein Kapitel öffnet es. **Allgemein** enthält die Kapitel, die zu keiner Anwendung gehören. |
+| Kapitelliste (links) | Ein Eintrag je Anwendung, darunter ihre Kapitel. Ein Klick auf ein Kapitel öffnet es. **Allgemein** enthält die Kapitel, die zu keiner Anwendung gehören. Ein Kapitel mit Unterkapiteln hat einen Pfeil, der sie aufklappt. |
 | Kapitelliste ein- oder ausblenden (erster Knopf) | Blendet die Liste aus, damit das Kapitel mehr Platz hat. Das Handbuch merkt sich Ihre Wahl. |
 | Zurück / Vorwärts (Pfeile) | Wechselt zwischen den Kapiteln, die Sie geöffnet haben, wie in einem Webbrowser. |
 | Sprache (oben rechts) | Zeigt das Handbuch in einer anderen Sprache. Gibt es das Kapitel in dieser Sprache, öffnet sich dasselbe Kapitel, sonst das erste Kapitel derselben Anwendung. Die Liste bietet nur Sprachen an, in denen es Kapitel gibt. |

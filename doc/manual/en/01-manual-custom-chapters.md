@@ -82,6 +82,11 @@ The first heading (`# Title`) is the title in the chapter list. The manual shows
 HTML in a chapter is shown as text, never executed. Links of other kinds (`javascript:`, `data:`, paths) are shown as
 plain text. Pictures from other web sites are not shown: they would let that site see who reads which chapter.
 
+**Sub-chapters:** a chapter whose first line is `<!-- parent: 40-elegxos -->` is listed below the chapter
+`40-elegxos` (of the same application, or of `general`). Sub-chapters can have sub-chapters of their own. Without that
+line, or if the parent does not exist, the chapter stays at the top of its application. The line is not shown in the
+text. A short chapter that only introduces its sub-chapters groups chapters by topic, also under `general`.
+
 The section anchor of a heading is formed like on GitHub: lower case, spaces become hyphens, punctuation is dropped
 (`## 2. Who may edit` → `2-who-may-edit`).
 

@@ -14,6 +14,8 @@ dafür nicht von egwmanual ab, nur ihre Hilfe-Knöpfe brauchen es.
 - Ein Ordner je Sprache (`de`, `en`, `el` …). Eine Übersetzung hat im Ordner der anderen Sprache denselben Dateinamen.
 - Namen der Kapitel: Kleinbuchstaben, Ziffern und Bindestriche, mit einer Zahl am Anfang, zum Beispiel
   `40-myapp-anleitung-00-grundlagen`. Sie stehen in der Reihenfolge ihrer Namen.
+- Mit der ersten Zeile `<!-- parent: <kapitel> -->` steht das Kapitel unter einem anderen Kapitel der Anwendung
+  (Unterkapitel), siehe [Eigene Kapitel](01-manual-custom-chapters.md#3-ein-kapitel-schreiben).
 - Die Namen gelten für alle Anwendungen gemeinsam, denn die Hilfe-Knöpfe öffnen ein Kapitel über seinen Namen. Wählen
   Sie ein Präfix der Anwendung, damit keine andere Anwendung denselben Namen verwendet (verwenden ihn zwei, gilt das
   Kapitel der in alphabetischer Reihenfolge ersten).
