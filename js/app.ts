@@ -77,7 +77,7 @@ export class EgwmanualApp extends EgwApp
 		const url = this.chapterUrl(_widget, {page: _id, lang: content.getEntry('lang')});
 		if (url && _id !== content.getEntry('page'))
 		{
-			window.location.href = url;
+			this.navigate(_widget, url);
 		}
 		return false;
 	}
@@ -96,9 +96,19 @@ export class EgwmanualApp extends EgwApp
 		const url = this.chapterUrl(_widget, {page: content.getEntry('page') || '', app: content.getEntry('app') || '', lang: lang});
 		if (url)
 		{
-			window.location.href = url;
+			this.navigate(_widget, url);
 		}
 		return false;
+	}
+
+	/**
+	 * Open another chapter: nothing of the window is ever saved, so no "Leave site?" prompt (the language selector
+	 * and the tree count as changed widgets for etemplate2's close prompt)
+	 */
+	protected navigate(_widget : any, _url : string)
+	{
+		_widget.getInstanceManager?.()?.skip_close_prompt?.(true);
+		window.location.href = _url;
 	}
 
 	/**

@@ -82,8 +82,10 @@ class Hooks
 	/**
 	 * Site configuration in the admin application
 	 */
-	public static function admin($location) : void
+	public static function admin($args) : void
 	{
+		// hooks get ['location' => ...]
+		$location = is_array($args) ? ($args['location'] ?? '') : (string)$args;
 		$file = [
 			'Site Configuration' => Api\Egw::link('/index.php', 'menuaction=admin.admin_config.index&appname='.Manual::APP.'&ajax=true'),
 		];
