@@ -14,7 +14,7 @@ administrators complete it with their own chapters from the filemanager.
 - **No dependencies** besides the EGroupware API. Applications don't depend on egwmanual to ship chapters; only
   their Help buttons need it.
 
-The manual of the manual is in [doc/manual](doc/manual/en/00-manual.md) (English and Greek):
+The manual of the manual is in [doc/manual](doc/manual/en/00-manual.md) (English, German and Greek):
 [using it](doc/manual/en/00-manual.md), [custom chapters](doc/manual/en/01-manual-custom-chapters.md) and
 [chapters of an application](doc/manual/en/02-manual-for-developers.md).
 
