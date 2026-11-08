@@ -1,0 +1,34 @@
+/* egwmanual: the manual window (manual.xet, src/Ui.php) */
+
+/* the chapter list left (Chapters::tree()), hidden with the toggle button */
+et2-tree.egwmanual_tree { flex: 0 0 24em; overflow: auto; border-right: 1px solid var(--sl-color-neutral-300, #ddd); font-size: 13px; }
+.egwmanual_notree et2-tree.egwmanual_tree { display: none; }
+et2-tree.egwmanual_tree::part(label_text) { white-space: normal; }
+/* the application nodes are unselectable (they only open and close), which the tree shows at half opacity */
+et2-tree.egwmanual_tree::part(item-item) { opacity: 1; }
+.egwmanual_title { font-weight: 600; margin-left: .6em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1 1 auto; min-width: 0; }
+.egwmanual_nav { align-items: center; gap: .4em; }
+et2-select.egwmanual_lang { flex: 0 0 auto; width: 12em; margin-left: auto; }
+.egwmanual_warning { display: block; padding: .3em .6em; color: var(--sl-color-danger-700, #b00020); background: var(--sl-color-danger-50, #fff0f0); }
+/* one scrollbar per pane: the grid copies the widget's class to its cell, so the cell is the frame and the tree and the html widget the scrollers */
+form#egwmanual-manual { overflow: hidden; }
+td.egwmanual_main { position: relative; padding: 0; overflow: hidden; }
+et2-hbox.egwmanual_main { position: absolute; inset: 0; align-items: stretch; gap: 0; }
+et2-html.egwmanual_body { flex: 1 1 auto; min-width: 0; overflow: auto; display: block; padding: 0 1.5em 2em 1.5em; font-size: 14px; line-height: 1.5; }
+et2-html.egwmanual_body > * { max-width: 60em; }
+.egwmanual_body h1 { font-size: 1.6em; margin: .8em 0 .4em; }
+.egwmanual_body h2 { font-size: 1.3em; margin: 1.2em 0 .4em; border-bottom: 1px solid var(--sl-color-neutral-300, #ddd); }
+.egwmanual_body h3 { font-size: 1.1em; margin: 1em 0 .3em; }
+.egwmanual_body blockquote { margin: .6em 0; padding: .4em 1em; border-left: 4px solid var(--sl-color-primary-300, #9cf); background: var(--sl-color-neutral-50, #f7f7f7); }
+.egwmanual_body code { font-family: monospace; font-size: .95em; background: var(--sl-color-neutral-100, #f0f0f0); padding: 0 .2em; }
+.egwmanual_body pre { background: var(--sl-color-neutral-100, #f0f0f0); padding: .6em; overflow: auto; }
+.egwmanual_table { border-collapse: collapse; margin: .6em 0; }
+.egwmanual_table th, .egwmanual_table td { border: 1px solid var(--sl-color-neutral-300, #ddd); padding: .3em .6em; vertical-align: top; text-align: left; }
+.egwmanual_table th { background: var(--sl-color-neutral-100, #f0f0f0); }
+.egwmanual_img { max-width: 100%; border: 1px solid var(--sl-color-neutral-300, #ddd); margin: .4em 0; display: block; }
+.egwmanual_icon { display: inline-block; height: 1.15em; width: auto; vertical-align: -.2em; margin: 0 .15em; }
+.egwmanual_missing { color: var(--sl-color-danger-700, #b00020); }
+/* text the administrators added to a chapter (<chapter>.append.md of the custom folder) */
+.egwmanual_body section.egwmanual_local { margin: 1em 0; padding: .2em 1em .6em; border-left: 4px solid var(--sl-color-warning-400, #e0a800); background: var(--sl-color-warning-50, #fffbeb); }
+.egwmanual_local_label { margin: .4em 0 0; font-size: .85em; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; color: var(--sl-color-warning-800, #7a5800); }
+.egwmanual_config_help { white-space: normal; color: var(--sl-color-neutral-700, #555); }

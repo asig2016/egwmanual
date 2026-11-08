@@ -1,0 +1,31 @@
+egwmanual	common	de	Handbuch
+manual	egwmanual	de	Handbuch
+general	egwmanual	de	Allgemein
+forward	egwmanual	de	Vorwärts
+the chapter you came from	egwmanual	de	Das Kapitel, von dem Sie kamen
+show or hide the chapter list	egwmanual	de	Kapitelliste ein- oder ausblenden
+language of the manual	egwmanual	de	Sprache des Handbuchs
+the chapter %1 does not exist	egwmanual	de	Das Kapitel %1 existiert nicht
+there is no chapter in this language	egwmanual	de	In dieser Sprache gibt es kein Kapitel
+local addition	egwmanual	de	Lokale Ergänzung
+the manual of this application, as a popup window	egwmanual	de	Das Handbuch dieser Anwendung, als Popup-Fenster
+the custom chapters of %1 are not shown	egwmanual	de	Die eigenen Kapitel aus %1 werden nicht angezeigt
+language of the manual when the user's own language has no chapters	egwmanual	de	Sprache des Handbuchs, wenn die Sprache des Benutzers keine Kapitel hat
+folder of the custom chapters (filemanager)	egwmanual	de	Ordner der eigenen Kapitel (Dateimanager)
+editors: only this group may be able to write into the folder	egwmanual	de	Redakteure: nur diese Gruppe darf in den Ordner schreiben können
+admins	egwmanual	de	Admins
+layout of the folder: <lang>/<app>/<chapter>.md is a new chapter or replaces the shipped chapter of that name (an empty file hides it); <lang>/<app>/<chapter>.append.md adds text to the chapter; <lang>/<app>/images/ holds the pictures (png, jpeg, gif, webp). <app> is the name of an application or general. the custom chapters are shown to every user of the manual, and are not used at all while somebody else than the editors may write into the folder.	egwmanual	de	Aufbau des Ordners: <lang>/<app>/<kapitel>.md ist ein neues Kapitel oder ersetzt das mitgelieferte Kapitel gleichen Namens (eine leere Datei blendet es aus); <lang>/<app>/<kapitel>.append.md ergänzt das Kapitel; <lang>/<app>/images/ enthält die Bilder (png, jpeg, gif, webp). <app> ist der Name einer Anwendung oder general. Die eigenen Kapitel sieht jeder Benutzer des Handbuchs; sie werden gar nicht verwendet, solange außer den Redakteuren noch jemand in den Ordner schreiben kann.
+invalid language %1	egwmanual	de	Ungültige Sprache %1
+the editors have to be a group	egwmanual	de	Die Redakteure müssen eine Gruppe sein
+there is no editors group	egwmanual	de	Es gibt keine Redakteursgruppe
+the folder has to be an absolute path	egwmanual	de	Der Ordner muss ein absoluter Pfad sein
+only the editors may be able to write into the folder of the custom chapters	egwmanual	de	Nur die Redakteure dürfen in den Ordner der eigenen Kapitel schreiben können
+%1 is no folder	egwmanual	de	%1 ist kein Ordner
+%1 is mounted into the folder	egwmanual	de	%1 ist in den Ordner eingehängt
+%1 is not stored in the database filesystem	egwmanual	de	%1 liegt nicht im Datenbank-Dateisystem
+%1 is a symlink or lies below one	egwmanual	de	%1 ist ein symbolischer Link oder liegt unter einem
+the folder holds more than %1 entries	egwmanual	de	Der Ordner enthält mehr als %1 Einträge
+%1 belongs to %2	egwmanual	de	%1 gehört %2
+%1 is writable by everybody	egwmanual	de	%1 ist für alle beschreibbar
+%1 is writable by the group %2	egwmanual	de	%1 ist für die Gruppe %2 beschreibbar
+%1 grants %2 write access	egwmanual	de	%1 gibt %2 Schreibrecht

@@ -1,0 +1,31 @@
+egwmanual	common	el	Εγχειρίδιο
+manual	egwmanual	el	Εγχειρίδιο
+general	egwmanual	el	Γενικά
+forward	egwmanual	el	Εμπρός
+the chapter you came from	egwmanual	el	Το κεφάλαιο από το οποίο ήρθατε
+show or hide the chapter list	egwmanual	el	Εμφάνιση ή απόκρυψη της λίστας κεφαλαίων
+language of the manual	egwmanual	el	Γλώσσα του εγχειριδίου
+the chapter %1 does not exist	egwmanual	el	Το κεφάλαιο %1 δεν υπάρχει
+there is no chapter in this language	egwmanual	el	Δεν υπάρχει κεφάλαιο σε αυτή τη γλώσσα
+local addition	egwmanual	el	Τοπική προσθήκη
+the manual of this application, as a popup window	egwmanual	el	Το εγχειρίδιο αυτής της εφαρμογής, σε αναδυόμενο παράθυρο
+the custom chapters of %1 are not shown	egwmanual	el	Τα δικά σας κεφάλαια του %1 δεν εμφανίζονται
+language of the manual when the user's own language has no chapters	egwmanual	el	Γλώσσα του εγχειριδίου όταν η γλώσσα του χρήστη δεν έχει κεφάλαια
+folder of the custom chapters (filemanager)	egwmanual	el	Φάκελος των δικών σας κεφαλαίων (διαχείριση αρχείων)
+editors: only this group may be able to write into the folder	egwmanual	el	Συντάκτες: μόνο αυτή η ομάδα επιτρέπεται να γράφει στον φάκελο
+admins	egwmanual	el	Admins
+layout of the folder: <lang>/<app>/<chapter>.md is a new chapter or replaces the shipped chapter of that name (an empty file hides it); <lang>/<app>/<chapter>.append.md adds text to the chapter; <lang>/<app>/images/ holds the pictures (png, jpeg, gif, webp). <app> is the name of an application or general. the custom chapters are shown to every user of the manual, and are not used at all while somebody else than the editors may write into the folder.	egwmanual	el	Δομή του φακέλου: το <lang>/<app>/<κεφάλαιο>.md είναι νέο κεφάλαιο ή αντικαθιστά το ομώνυμο κεφάλαιο της εφαρμογής (ένα κενό αρχείο το κρύβει)· το <lang>/<app>/<κεφάλαιο>.append.md προσθέτει κείμενο στο κεφάλαιο· το <lang>/<app>/images/ περιέχει τις εικόνες (png, jpeg, gif, webp). Το <app> είναι το όνομα μιας εφαρμογής ή general. Τα δικά σας κεφάλαια τα βλέπει κάθε χρήστης του εγχειριδίου και δεν χρησιμοποιούνται καθόλου όσο μπορεί να γράψει στον φάκελο και κάποιος άλλος εκτός από τους συντάκτες.
+invalid language %1	egwmanual	el	Μη έγκυρη γλώσσα %1
+the editors have to be a group	egwmanual	el	Οι συντάκτες πρέπει να είναι ομάδα
+there is no editors group	egwmanual	el	Δεν υπάρχει ομάδα συντακτών
+the folder has to be an absolute path	egwmanual	el	Ο φάκελος πρέπει να είναι απόλυτη διαδρομή
+only the editors may be able to write into the folder of the custom chapters	egwmanual	el	Μόνο οι συντάκτες επιτρέπεται να μπορούν να γράφουν στον φάκελο των δικών σας κεφαλαίων
+%1 is no folder	egwmanual	el	Το %1 δεν είναι φάκελος
+%1 is mounted into the folder	egwmanual	el	Το %1 είναι προσαρτημένο μέσα στον φάκελο
+%1 is not stored in the database filesystem	egwmanual	el	Το %1 δεν βρίσκεται στο σύστημα αρχείων της βάσης δεδομένων
+%1 is a symlink or lies below one	egwmanual	el	Το %1 είναι συμβολικός σύνδεσμος ή βρίσκεται κάτω από έναν
+the folder holds more than %1 entries	egwmanual	el	Ο φάκελος περιέχει περισσότερες από %1 εγγραφές
+%1 belongs to %2	egwmanual	el	Το %1 ανήκει στον %2
+%1 is writable by everybody	egwmanual	el	Στο %1 μπορούν να γράψουν όλοι
+%1 is writable by the group %2	egwmanual	el	Στο %1 μπορεί να γράψει η ομάδα %2
+%1 grants %2 write access	egwmanual	el	Το %1 δίνει δικαίωμα εγγραφής στον %2

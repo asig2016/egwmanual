@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay PUBLIC "-//EGroupware GmbH//eTemplate 2.0//EN" "https://www.egroupware.org/etemplate2.0.dtd">
+<!-- egwmanual: site configuration (Hooks::config / config_validate) -->
+<overlay>
+	<template id="egwmanual.config" template="" lang="" group="0" version="26.0.001">
+		<grid width="100%" class="admin-config egwGridView_grid">
+			<columns>
+				<column width="40%"/>
+				<column/>
+			</columns>
+			<rows>
+				<row>
+					<et2-description value="Language of the manual when the user's own language has no chapters" label="%s:"/>
+					<et2-select id="newsettings[fallback_lang]" search="true"/>
+				</row>
+				<row>
+					<et2-description value="Folder of the custom chapters (filemanager)" label="%s:"/>
+					<et2-vfs-path id="newsettings[custom_folder]"/>
+				</row>
+				<row>
+					<et2-description value="Editors: only this group may be able to write into the folder" label="%s:"/>
+					<et2-select-account id="newsettings[editors_group]" accountType="groups" multiple="false" emptyLabel="Admins"/>
+				</row>
+				<row>
+					<et2-description span="all" class="egwmanual_config_help" value="Layout of the folder: &lt;lang&gt;/&lt;app&gt;/&lt;chapter&gt;.md is a new chapter or replaces the shipped chapter of that name (an empty file hides it); &lt;lang&gt;/&lt;app&gt;/&lt;chapter&gt;.append.md adds text to the chapter; &lt;lang&gt;/&lt;app&gt;/images/ holds the pictures (png, jpeg, gif, webp). &lt;app&gt; is the name of an application or general. The custom chapters are shown to every user of the manual, and are not used at all while somebody else than the editors may write into the folder."/>
+				</row>
+			</rows>
+		</grid>
+	</template>
+</overlay>

@@ -1,0 +1,7 @@
+*.min.js
+*.min.js.map
+*.map
+/js/*.js
+*.log
+*.diff
+*.patch

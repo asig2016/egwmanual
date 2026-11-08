@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- egwmanual: a chapter of the manual (Ui::page), opened by the Help buttons of the screens and the "Manual" entry
+	of every application's menu. Top the navigation and the language, left the chapter list (one node per application,
+	Chapters::tree()), which the user may hide; right the chapter. -->
+<overlay>
+  <template id="egwmanual.manual" template="" lang="" group="0" version="26.0.001">
+    <grid width="100%" height="100%" class="egwmanual">
+      <columns>
+        <column/>
+      </columns>
+      <rows>
+        <row class="dialogHeader">
+          <et2-hbox class="egwmanual_nav">
+            <et2-button-icon label="Show or hide the chapter list" image="layout-sidebar" noSubmit="true" class="egwmanual_toggle" onclick="app.egwmanual.treeToggle"/>
+            <et2-button-icon label="Back" image="arrow-left" noSubmit="true" statustext="The chapter you came from" onclick="history.back(); return false;"/>
+            <et2-button-icon label="Forward" image="arrow-right" noSubmit="true" onclick="history.forward(); return false;"/>
+            <et2-description id="title" noLang="1" class="egwmanual_title"/>
+            <et2-select id="lang" class="egwmanual_lang" statustext="Language of the manual" noLang="1" onchange="app.egwmanual.langChange"/>
+            <et2-textbox id="anchor" type="hidden"/>
+          </et2-hbox>
+        </row>
+        <row disabled="!@warning">
+          <et2-description id="warning" noLang="1" class="egwmanual_warning"/>
+        </row>
+        <row height="100%">
+          <et2-hbox class="egwmanual_main">
+            <et2-tree id="tree" class="egwmanual_tree" multiple="false"/>
+            <html id="body" class="egwmanual_body"/>
+          </et2-hbox>
+        </row>
+      </rows>
+    </grid>
+  </template>
+</overlay>
