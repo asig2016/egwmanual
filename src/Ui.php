@@ -57,7 +57,7 @@ class Ui
 			'anchor' => preg_replace('/[^\p{L}\p{N}_-]/u', '', (string)($_GET['anchor'] ?? '')),
 			'title' => $page !== '' ? Chapters::title($page, $lang) : lang('Manual'),
 			'body' => $page !== '' ? Manual::html($page, $lang) : '<p class="egwmanual_missing">'.
-				Renderer::escape(lang('There is no chapter in this language')).'</p>',
+				Renderer::escape(Manual::translate('There is no chapter in this language', $lang)).'</p>',
 			'warning' => self::warning(),
 		];
 		$sel_options = [

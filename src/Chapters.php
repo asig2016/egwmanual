@@ -376,7 +376,13 @@ class Chapters
 		foreach ($groups as $group => $chapters)
 		{
 			$app = $group === Manual::GENERAL ? Manual::APP : $group;
-			$label = $group === Manual::GENERAL ? lang('General') : lang($GLOBALS['egw_info']['apps'][$app]['title'] ?? $app);
+			// in the language of the chapters (the reader may have switched it), not the user's
+			$label = $group === Manual::GENERAL ? Manual::translate('General', $lang) :
+				Manual::translate($app, $lang, $app);
+			if ($label === $app && !empty($GLOBALS['egw_info']['apps'][$app]['title']))
+			{
+				$label = lang($GLOBALS['egw_info']['apps'][$app]['title']);	// no title in that language
+			}
 			// the icon the framework's application list shows: "kdots-navbar" (one colour, drawn in the application's
 			// colour) before "navbar" (white on a circle in the application's colour), see app.ts treeColors()
 			$kdots = Api\Image::find($app, 'kdots-navbar') !== null;

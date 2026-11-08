@@ -166,6 +166,31 @@ class ChaptersTest extends \PHPUnit\Framework\TestCase
 		$this->assertStringNotContainsString('<script>', $html);
 	}
 
+	/**
+	 * The chapter list and the texts of the chapter are in the language of the manual shown, not the user's
+	 */
+	public function testLabelsInTheLanguageOfTheManual() : void
+	{
+		$prefs = $GLOBALS['egw_info']['user']['preferences']['common']['lang'] ?? null;
+		$GLOBALS['egw_info']['user']['preferences']['common']['lang'] = 'xx';	// the user's own: neither of the two
+		$GLOBALS['egw_info']['user']['apps'] = [Manual::APP => [], 'addressbook' => []];
+		$this->custom(['en' => ['addressbook/10-ab.md' => "# Contacts\n", 'general/00-manual.append.md' => "x\n"],
+			'el' => ['addressbook/10-ab.md' => "# Επαφές\n"]]);
+		try
+		{
+			$this->assertSame('General', Manual::translate('General', 'en'));
+			$this->assertSame('Γενικά', Manual::translate('General', 'el'));
+			$this->assertSame('Το κεφάλαιο x δεν υπάρχει', Manual::translate('The chapter %1 does not exist', 'el', Manual::APP, 'x'));
+			$this->assertSame(['General', 'Address Book'], array_column(Chapters::tree('en')['children'], 'label'));
+			$this->assertSame(['Γενικά', 'Επαφές'], array_column(Chapters::tree('el')['children'], 'label'));
+			$this->assertStringContainsString('<p class="egwmanual_local_label">Local addition</p>', Manual::html('00-manual', 'en'));
+		}
+		finally
+		{
+			$GLOBALS['egw_info']['user']['preferences']['common']['lang'] = $prefs;
+		}
+	}
+
 	public function testSplitIgnoresCode() : void
 	{
 		[$before, $after] = Chapters::split("# T\n\n## A\n\n```\n## B\n```\n\n## C\n", 'a');

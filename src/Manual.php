@@ -66,6 +66,34 @@ class Manual
 		return $langs[0] ?? self::DEFAULT_LANG;
 	}
 
+	/** translate() of this request: "app:lang" => phrases of that application's lang file */
+	protected static array $phrases = [];
+
+	/**
+	 * A phrase in the language of the manual shown, which may differ from the user's own (the language selector)
+	 *
+	 * Read from the application's own lang file in that language (the global translations stay those of the user);
+	 * a phrase missing there falls back to lang(). The application's title is its row tagged "common".
+	 */
+	public static function translate(string $phrase, string $lang, string $app = self::APP, ...$vars) : string
+	{
+		if ($lang !== ($GLOBALS['egw_info']['user']['preferences']['common']['lang'] ?? null) && self::validLang($lang) &&
+			preg_match('/^[a-z0-9_]+$/', $app))
+		{
+			$phrases = self::$phrases[$app.':'.$lang] ??= (array)Api\Translation::load_app_files($app, $lang, $app);
+			if (isset($phrases[$key = strtolower(trim($phrase))]))
+			{
+				$translation = $phrases[$key];
+				foreach (array_values($vars) as $n => $var)
+				{
+					$translation = str_replace('%'.($n + 1), (string)$var, $translation);
+				}
+				return $translation;
+			}
+		}
+		return lang($phrase, ...$vars);
+	}
+
 	/**
 	 * A language the reader has the chapter in: the configured fallback first, null if none
 	 */
@@ -111,7 +139,7 @@ class Manual
 	{
 		if (!($parts = Chapters::parts($page, $lang)))
 		{
-			return '<p class="egwmanual_missing">'.Renderer::escape(lang('The chapter %1 does not exist', $page)).'</p>';
+			return '<p class="egwmanual_missing">'.Renderer::escape(self::translate('The chapter %1 does not exist', $lang, self::APP, $page)).'</p>';
 		}
 		$renderer = self::renderer($page, $lang);
 		$html = '';
@@ -119,7 +147,7 @@ class Manual
 		{
 			$part = $renderer->render(self::live($markdown, $lang));
 			$html .= $local ? '<section class="egwmanual_local"><p class="egwmanual_local_label">'.
-				Renderer::escape(lang('Local addition')).'</p>'.$part.'</section>' : $part;
+				Renderer::escape(self::translate('Local addition', $lang)).'</p>'.$part.'</section>' : $part;
 		}
 		return $html;
 	}
