@@ -30,6 +30,23 @@ export class EgwmanualApp extends EgwApp
 
 		if (_name === 'egwmanual.manual')
 		{
+			// opened from the avatar menu: the manual of the application in front of the opener
+			if (_et2.widgetContainer.getArrayMgr('content').getEntry('ask_opener'))
+			{
+				let active = '';
+				try
+				{
+					active = String(window.opener?.framework?.activeApp?.appName ?? '');
+				}
+				catch (e) {}	// an opener of another origin
+				const base = _et2.widgetContainer.getArrayMgr('content').getEntry('page_url_base');
+				if (/^[a-z0-9_]+$/.test(active) && base)
+				{
+					_et2.skip_close_prompt?.(true);
+					window.location.replace(base + '&app=' + encodeURIComponent(active));
+					return;
+				}
+			}
 			// a chapter opened at a heading (&anchor=)
 			const anchor = _et2.widgetContainer.getWidgetById('anchor')?.value;
 			if (anchor)

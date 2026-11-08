@@ -5,7 +5,8 @@ administrators complete it with their own chapters from the filemanager.
 
 - **Chapters come with the applications**: Markdown files in `<app>/doc/manual/<lang>/`, found automatically. A user
   sees only the chapters of the applications they may use.
-- **"Manual" in every application's menu**, and Help buttons that open a chapter at a section.
+- **"Manual" in every application's menu** and in the user menu (top right, for the application in front), and
+  Help buttons that open a chapter at a section.
 - **Languages**: the window opens in the user's language, and a selector at the top switches it. If a chapter is not
   written in the user's language, it opens in one it exists in.
 - **Custom chapters** from a filemanager folder: add chapters (also for applications without a manual), replace or

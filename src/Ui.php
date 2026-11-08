@@ -38,9 +38,19 @@ class Ui
 		}
 		if (!Manual::validPage($page) || !Chapters::exists($page, $lang))
 		{
+			// the manual of an application (app=, e.g. the avatar menu): its start chapter, as its menu entry opens
+			// it, in another language if the reader's has none (unless the reader chose the language)
 			$app = (string)($_GET['app'] ?? '');
-			$page = (Chapters::visible($app) ? Chapters::first($lang, $app) : null) ??
-				Chapters::first($lang, Manual::GENERAL) ?? Chapters::first($lang) ?? '';
+			$start = Chapters::visible($app) && $app !== Manual::GENERAL ? Hooks::start($app, $lang) : null;
+			foreach ($start === null && $wanted === null && Chapters::visible($app) ? Chapters::languages() : [] as $other)
+			{
+				if (($start = Hooks::start($app, $other)) !== null)
+				{
+					$lang = $other;
+					break;
+				}
+			}
+			$page = $start ?? Chapters::first($lang, Manual::GENERAL) ?? Chapters::first($lang) ?? '';
 		}
 		$langs = Chapters::languages();
 		$names = Api\Translation::get_available_langs();
@@ -59,6 +69,8 @@ class Ui
 			'body' => $page !== '' ? Manual::html($page, $lang) : '<p class="egwmanual_missing">'.
 				Renderer::escape(Manual::translate('There is no chapter in this language', $lang)).'</p>',
 			'warning' => self::warning(),
+			// opened from the avatar menu: the window asks its opener which application is active (app.ts)
+			'ask_opener' => !empty($_GET['active']) && !isset($_GET['page']) && !isset($_GET['app']),
 		];
 		$sel_options = [
 			'tree' => Chapters::tree($lang, $page),

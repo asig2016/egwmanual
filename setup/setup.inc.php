@@ -30,6 +30,7 @@ $setup_info['egwmanual']['depends'][] = [
 ];
 
 $setup_info['egwmanual']['hooks']['sidebox_all']        = Hooks::class.'::sidebox_all';
+$setup_info['egwmanual']['hooks']['topmenu_info']       = Hooks::class.'::topmenu_info';
 $setup_info['egwmanual']['hooks']['admin']              = Hooks::class.'::admin';
 $setup_info['egwmanual']['hooks']['config']             = Hooks::class.'::config';
 $setup_info['egwmanual']['hooks']['config_validate']    = Hooks::class.'::config_validate';

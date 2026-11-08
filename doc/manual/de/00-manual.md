@@ -5,10 +5,11 @@ dürfen. Zwei Kollegen können deshalb unterschiedliche Kapitellisten sehen.
 
 ## 1. Das Handbuch öffnen
 
-Es gibt zwei Wege:
+Es gibt drei Wege:
 
 - **Handbuch** im Menü einer Anwendung öffnet das Kapitel, mit dem ein neuer Benutzer dieser Anwendung beginnt.
 - **Hilfe** (das Fragezeichen) auf einer Maske öffnet das Kapitel, das diese Maske beschreibt, beim passenden Abschnitt.
+- **Handbuch** im Benutzermenü (Ihr Bild oben rechts) öffnet das Handbuch der Anwendung, in der Sie gerade sind.
 
 ![Der Eintrag Handbuch im Menü einer Anwendung](images/egwmanual-menu.png)
 

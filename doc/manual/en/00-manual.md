@@ -5,10 +5,11 @@ may use, so two colleagues can see different chapter lists.
 
 ## 1. Opening the manual
 
-There are two ways to open it:
+There are three ways to open it:
 
 - **Manual** in the menu of an application opens the chapter of that application where a newcomer starts.
 - **Help** (the question mark) on a screen opens the chapter that describes this screen, at the right section.
+- **Manual** in the user menu (your picture, top right) opens the manual of the application you are in.
 
 ![The entry Manual in the menu of an application](images/egwmanual-menu.png)
 

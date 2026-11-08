@@ -48,7 +48,7 @@ in.
 
 ## 4. The chapter the menu entry opens
 
-Without further work the entry **Manual** opens the first chapter of the application. To open another one, register
+Without further work the entry **Manual** (in the application's menu, and in the user menu while the application is in front) opens the first chapter of the application. To open another one, register
 the hook `manual_start` in `setup/setup.inc.php` and return the chapter's name:
 
 ```php

@@ -64,6 +64,24 @@ class Hooks
 	}
 
 	/**
+	 * "Manual" in the avatar menu (top right): opens the manual of the application in front
+	 *
+	 * The menu runs a javascript: entry only as one call with literal arguments (CSP), so the link cannot name the
+	 * active application: the window asks its opener for it (active=1, see Ui::page and app.ts).
+	 */
+	public static function topmenu_info($data = null) : void
+	{
+		if (empty($GLOBALS['egw_info']['user']['apps'][Manual::APP]) || !isset($GLOBALS['egw']->framework))
+		{
+			return;
+		}
+		Api\Translation::add_app(Manual::APP);
+		$url = Api\Egw::link('/index.php', ['menuaction' => Manual::UI.'.page', 'active' => 1], false);
+		Api\Framework::add_topmenu_item(Manual::APP, "javascript:egw_openWindowCentered2('$url','egwmanual',920,850,'yes')",
+			lang('Manual'), '', 'navbar');
+	}
+
+	/**
 	 * The chapter the menu entry of an application opens in a language, null if it has none there
 	 *
 	 * An application may name it with the hook "manual_start" (returning a chapter name); else its first chapter.

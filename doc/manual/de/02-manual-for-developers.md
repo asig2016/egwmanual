@@ -50,7 +50,8 @@ Sprache, in der das Kapitel vorhanden ist.
 
 ## 4. Das Kapitel, das der Menüeintrag öffnet
 
-Ohne weiteres öffnet der Eintrag **Handbuch** das erste Kapitel der Anwendung. Für ein anderes registrieren Sie den
+Ohne weiteres öffnet der Eintrag **Handbuch** (im Menü der Anwendung, und im Benutzermenü, solange die Anwendung vorne ist)
+das erste Kapitel der Anwendung. Für ein anderes registrieren Sie den
 Hook `manual_start` in `setup/setup.inc.php` und geben den Namen des Kapitels zurück:
 
 ```php
