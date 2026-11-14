@@ -96,7 +96,8 @@ export class EgwmanualApp extends EgwApp
 			return false;
 		}
 		const content = _widget.getArrayMgr('content');
-		const url = this.chapterUrl(_widget, {page: _id, lang: content.getEntry('lang')});
+		// a chapter missing in the language shown opens in the one the list shows it in (Chapters::listed())
+		const url = this.chapterUrl(_widget, {page: _id, lang: content.getEntry('tree_lang')?.[_id] || content.getEntry('lang')});
 		if (url && _id !== content.getEntry('page'))
 		{
 			this.navigate(_widget, url);
@@ -289,6 +290,7 @@ export class EgwmanualApp extends EgwApp
 				width: 1.5em !important; height: 1.5em !important; filter: none;
 			}
 			sl-tree-item.egwmanual_local { font-style: italic; }
+			sl-tree-item.egwmanual_foreign::part(label) { color: var(--sl-color-neutral-600); }
 			${apps.map(_app => `sl-tree-item.egwmanual_app_${_app} { --application-color: var(--${_app}-color, var(--default-color, var(--sl-color-neutral-600))); }`).join('\n')}
 		`);
 		root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];

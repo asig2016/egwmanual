@@ -31,13 +31,15 @@ class Chapters
 	protected static array $index = [];
 	/** shippedDirs() of this request */
 	protected static array $dirs = [];
+	/** chapters an empty custom file hides, per key of index(): page => true */
+	protected static array $hidden = [];
 
 	/**
 	 * Forget what this request found (tests, a changed configuration)
 	 */
 	public static function reset() : void
 	{
-		self::$index = self::$dirs = [];
+		self::$index = self::$dirs = self::$hidden = [];
 	}
 
 	/**
@@ -119,12 +121,12 @@ class Chapters
 			return [];
 		}
 		$custom = Custom::get();
-		$key = $lang.':'.self::appsKey().':'.spl_object_id($custom);
+		$key = self::indexKey($lang);
 		if (isset(self::$index[$key]))
 		{
 			return self::$index[$key];
 		}
-		$index = [];
+		$index = $hidden = [];
 		foreach (self::shippedDirs($lang) as $app => $dir)
 		{
 			foreach (glob($dir.'/*.md') ?: [] as $file)
@@ -158,6 +160,7 @@ class Chapters
 			if (trim((string)$custom->read($lang, $rel)) === '')
 			{
 				unset($index[$page]);	// an empty file hides the chapter (or is no chapter at all)
+				$hidden[$page] = true;
 				continue;
 			}
 			$index[$page] = ['group' => $group, 'source' => isset($index[$page]) ? 'override' : 'custom',
@@ -171,7 +174,61 @@ class Chapters
 			}
 		}
 		ksort($index, SORT_STRING);
+		self::$hidden[$key] = $hidden;
 		return self::$index[$key] = self::parents($index, $lang);
+	}
+
+	protected static function indexKey(string $lang) : string
+	{
+		return $lang.':'.self::appsKey().':'.spl_object_id(Custom::get());
+	}
+
+	/**
+	 * The chapters an empty custom file hides in a language: page => true
+	 */
+	public static function hidden(string $lang) : array
+	{
+		self::index($lang);
+		return self::$hidden[self::indexKey($lang)] ?? [];
+	}
+
+	/**
+	 * The chapters the chapter list shows in a language: those of index($lang), and every chapter the reader has
+	 * only in another language (not one hidden in this one), taken from the configured fallback language first
+	 * (Manual::otherLangs()). Without them a reader of a language few applications ship chapters in would not see
+	 * the manual of the others at all.
+	 *
+	 * @return array page => index() entry plus 'lang' => the language it is shown in, in the order of the names
+	 */
+	public static function listed(string $lang) : array
+	{
+		if (!Manual::validLang($lang))
+		{
+			return [];
+		}
+		$listed = array_map(fn($entry) => ['lang' => $lang] + $entry, self::index($lang));
+		$hidden = self::hidden($lang);
+		foreach (Manual::otherLangs($lang) as $other)
+		{
+			foreach (self::index($other) as $page => $entry)
+			{
+				if (!isset($listed[$page]) && !isset($hidden[$page]))
+				{
+					$listed[$page] = ['lang' => $other] + $entry;
+				}
+			}
+		}
+		ksort($listed, SORT_STRING);
+		// a parent named in another language counts only if it is listed in the same group
+		foreach ($listed as &$entry)
+		{
+			if ($entry['parent'] !== null && ($listed[$entry['parent']]['group'] ?? null) !== $entry['group'])
+			{
+				$entry['parent'] = null;
+			}
+		}
+		unset($entry);
+		return self::cutLoops($listed, $lang);
 	}
 
 	/**
@@ -190,6 +247,14 @@ class Chapters
 			$entry['parent'] = $parent !== null && $parent !== $page && ($index[$parent]['group'] ?? null) === $entry['group'] ? $parent : null;
 		}
 		unset($entry);
+		return self::cutLoops($index, $lang);
+	}
+
+	/**
+	 * Cut every loop of parents (a chapter below itself): the chapter where it closes goes to the top of its group
+	 */
+	protected static function cutLoops(array $index, string $lang) : array
+	{
 		foreach (array_keys($index) as $page)
 		{
 			// up the chain: back at the start is a loop, it is cut here
@@ -425,7 +490,7 @@ class Chapters
 	 */
 	public static function tree(string $lang, string $current = '') : array
 	{
-		$index = self::index($lang);
+		$index = self::listed($lang);
 		// the parents of the chapter shown start open
 		$open = [];
 		for ($up = $index[$current]['parent'] ?? null; $up !== null && !isset($open[$up]); $up = $index[$up]['parent'] ?? null)
@@ -433,15 +498,23 @@ class Chapters
 			$open[$up] = true;
 		}
 		$nodes = [];
-		foreach (self::pages($lang) as $page => $title)
+		foreach ($index as $page => $entry)
 		{
-			$entry = $index[$page];
+			$title = self::title($page, $entry['lang']);
 			$nodes[$page] = [
 				'value' => $page,
 				'label' => $title,
 				'title' => $title,
 				'class' => $entry['source'] !== 'shipped' || $entry['append'] ? 'egwmanual_local' : '',
 			];
+			if ($entry['lang'] !== $lang)
+			{
+				// a chapter missing in this language: shown in the one it has, which the click opens (Ui::page() tree_lang)
+				$name = Manual::langName($entry['lang']);
+				$nodes[$page]['label'] .= ' ('.$name.')';
+				$nodes[$page]['title'] = $title.' - '.Manual::translate('only in %1', $lang, Manual::APP, $name);
+				$nodes[$page]['class'] = trim($nodes[$page]['class'].' egwmanual_foreign');
+			}
 			if (isset($open[$page]))
 			{
 				$nodes[$page]['open'] = true;

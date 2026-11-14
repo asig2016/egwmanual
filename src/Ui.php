@@ -53,7 +53,6 @@ class Ui
 			$page = $start ?? Chapters::first($lang, Manual::GENERAL) ?? Chapters::first($lang) ?? '';
 		}
 		$langs = Chapters::languages();
-		$names = Api\Translation::get_available_langs();
 		$content = [
 			'lang' => $lang,
 			// a chapter of the tree navigates (a page the Back button returns to): the link is built here, a namespaced
@@ -63,6 +62,8 @@ class Ui
 			'app' => (string)Chapters::app($page, $lang),
 			// the chapter list: the current chapter selected, its application open; hidden while the user wants it so
 			'tree' => $page,
+			// the chapters of the list missing in this language: page => the language a click opens them in
+			'tree_lang' => array_filter(array_map(fn($entry) => $entry['lang'], Chapters::listed($lang)), fn($l) => $l !== $lang) ?: null,
 			'tree_class' => ($GLOBALS['egw_info']['user']['preferences'][Manual::APP]['tree'] ?? '') === 'hidden' ? 'egwmanual_notree' : '',
 			'anchor' => preg_replace('/[^\p{L}\p{N}_-]/u', '', (string)($_GET['anchor'] ?? '')),
 			'title' => $page !== '' ? Chapters::title($page, $lang) : lang('Manual'),
@@ -75,8 +76,7 @@ class Ui
 		$sel_options = [
 			'tree' => Chapters::tree($lang, $page),
 			// every language in its own name, as language choosers do (core translates only a few language names)
-			'lang' => array_combine($langs, array_map(fn($l) => class_exists('Locale') ?
-				mb_convert_case(\Locale::getDisplayName($l, $l), MB_CASE_TITLE) : ($names[$l] ?? $l), $langs)) ?: [$lang => $names[$lang] ?? $lang],
+			'lang' => array_combine($langs, array_map([Manual::class, 'langName'], $langs)) ?: [$lang => Manual::langName($lang)],
 		];
 		$readonlys = ['lang' => count($langs) < 2];
 		$GLOBALS['egw_info']['flags']['app_header'] = lang('Manual').': '.$content['title'];

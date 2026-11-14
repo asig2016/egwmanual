@@ -131,6 +131,46 @@ class ChaptersTest extends \PHPUnit\Framework\TestCase
 		$this->assertSame('app:general', Chapters::tree('el')['children'][0]['value'], 'the general chapters first');
 	}
 
+	/**
+	 * The chapter list of a language shows the chapters the reader has only in another language too, in that
+	 * language and marked as such: a reader of a language few applications ship chapters in sees every manual
+	 */
+	public function testChaptersOnlyInAnotherLanguage() : void
+	{
+		$app = self::APP;
+		$this->custom(['en' => [
+			"$app/99-zz-allo.md" => '',	// hidden in English: not taken from Greek either
+		]]);
+		$this->assertFalse(Chapters::exists('98-zz-dokimi', 'en'), 'the chapter is Greek only');
+
+		$listed = Chapters::listed('en');
+		$this->assertSame('el', $listed['98-zz-dokimi']['lang']);
+		$this->assertSame('en', $listed['00-manual']['lang'], 'a chapter of the language itself stays in it');
+		$this->assertArrayNotHasKey('99-zz-allo', $listed, 'hidden in this language');
+		$this->assertSame('el', Chapters::listed('el')['98-zz-dokimi']['lang']);
+
+		$groups = array_column(Chapters::tree('en')['children'], null, 'value');
+		$this->assertArrayHasKey('app:'.$app, $groups, 'the application is listed in English');
+		$node = array_column($groups['app:'.$app]['children'], null, 'value')['98-zz-dokimi'];
+		$this->assertSame('98. Δοκιμή ('.Manual::langName('el').')', $node['label']);
+		$this->assertStringContainsString('egwmanual_foreign', $node['class']);
+		$this->assertStringNotContainsString('egwmanual_foreign', array_column($groups['app:general']['children'], 'class', 'value')['00-manual']);
+
+		// a link to it opens it in Greek, at the top (the anchors differ per language)
+		$url = Manual::chapterLink('98-zz-dokimi', 'a-heading', 'en');
+		$this->assertStringContainsString('page=98-zz-dokimi', $url);
+		$this->assertStringContainsString('lang=el', $url);
+		$this->assertStringNotContainsString('anchor=', $url);
+		$this->assertNull(Manual::chapterLink('99-zz-allo', '', 'en'), 'hidden in this language');
+		$this->assertNull(Manual::chapterLink('97-zz-nowhere', '', 'en'));
+		$this->assertStringContainsString('lang=en', Manual::chapterLink('00-manual', 'x', 'en'));
+
+		// without the application: neither in its language nor in another one
+		$GLOBALS['egw_info']['user']['apps'] = [Manual::APP => []];
+		Chapters::reset();
+		$this->assertArrayNotHasKey('98-zz-dokimi', Chapters::listed('en'));
+	}
+
 	public function testAppends() : void
 	{
 		$this->custom(['el' => [

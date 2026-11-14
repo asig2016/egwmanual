@@ -48,15 +48,7 @@ class Manual
 	public static function lang(?string $wanted = null) : string
 	{
 		$langs = Chapters::languages();
-		try
-		{
-			$fallback = Api\Config::read(self::APP)['fallback_lang'] ?? null;
-		}
-		catch (\Throwable $e)
-		{
-			$fallback = null;	// no database (the tests)
-		}
-		foreach ([$wanted, $GLOBALS['egw_info']['user']['preferences']['common']['lang'] ?? null, $fallback] as $lang)
+		foreach ([$wanted, $GLOBALS['egw_info']['user']['preferences']['common']['lang'] ?? null, self::fallback()] as $lang)
 		{
 			if (self::validLang($lang) && in_array($lang, $langs, true))
 			{
@@ -104,15 +96,59 @@ class Manual
 		{
 			return null;
 		}
+		$fallback = self::fallback();
+		return in_array($fallback, $langs, true) ? $fallback : reset($langs);
+	}
+
+	/**
+	 * The configured fallback language, null if none
+	 */
+	public static function fallback() : ?string
+	{
 		try
 		{
 			$fallback = Api\Config::read(self::APP)['fallback_lang'] ?? null;
 		}
 		catch (\Throwable $e)
 		{
-			$fallback = null;
+			$fallback = null;	// no database (the tests)
 		}
-		return in_array($fallback, $langs, true) ? $fallback : reset($langs);
+		return self::validLang($fallback) ? $fallback : null;
+	}
+
+	/**
+	 * The other languages the reader has chapters in, in the order a chapter missing in $lang is looked for:
+	 * the configured fallback first, then by name
+	 *
+	 * @return string[]
+	 */
+	public static function otherLangs(string $lang) : array
+	{
+		$langs = Chapters::languages();
+		if (($fallback = self::fallback()) !== null && in_array($fallback, $langs, true))
+		{
+			array_unshift($langs, $fallback);
+		}
+		return array_values(array_diff(array_unique($langs), [$lang]));
+	}
+
+	/**
+	 * A language in its own name ("Ελληνικά", "Deutsch"), as language choosers show it
+	 */
+	public static function langName(string $lang) : string
+	{
+		if (class_exists('Locale'))
+		{
+			return mb_convert_case(\Locale::getDisplayName($lang, $lang), MB_CASE_TITLE);
+		}
+		try
+		{
+			return Api\Translation::get_available_langs()[$lang] ?? $lang;
+		}
+		catch (\Throwable $e)
+		{
+			return $lang;
+		}
 	}
 
 	/**
@@ -161,8 +197,24 @@ class Manual
 		$group = $entry['group'] ?? self::GENERAL;
 		$shipped_app = $entry['dir'] ?? ($group === self::GENERAL ? self::APP : $group);
 		return new Renderer(
-			static fn(string $page, string $anchor) => Chapters::exists($page, $lang) ? self::link($page, $anchor, $lang) : null,
+			static fn(string $page, string $anchor) => self::chapterLink($page, $anchor, $lang),
 			static fn(string $src) => self::imageUrl($src, $lang, $group, $shipped_app));
+	}
+
+	/**
+	 * The URL a link of a chapter in $lang to another chapter goes to, null if the reader has no such chapter
+	 *
+	 * A chapter missing in $lang opens in a language that has it, as the chapter list shows it (Chapters::listed()),
+	 * at its top: the headings, and so the anchors, differ per language.
+	 */
+	public static function chapterLink(string $page, string $anchor, string $lang) : ?string
+	{
+		if (Chapters::exists($page, $lang))
+		{
+			return self::link($page, $anchor, $lang);
+		}
+		$other = Chapters::listed($lang)[$page]['lang'] ?? null;
+		return $other !== null ? self::link($page, '', $other) : null;
 	}
 
 	/**
