@@ -185,7 +185,7 @@ class Manual
 			$html .= $local ? '<section class="egwmanual_local"><p class="egwmanual_local_label">'.
 				Renderer::escape(self::translate('Local addition', $lang)).'</p>'.$part.'</section>' : $part;
 		}
-		return $html;
+		return Renderer::toc($html, self::translate('Contents', $lang));
 	}
 
 	/**

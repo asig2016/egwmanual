@@ -247,6 +247,54 @@ class Renderer
 		return preg_replace_callback("/\0(\d+)\0/", fn($m) => $codes[(int)$m[1]], $text);
 	}
 
+	/**
+	 * A table of contents of a rendered chapter: its level 2 and 3 headings, as in-page links
+	 *
+	 * Placed after the introduction (the first quote, when it comes before the first section), else after the title.
+	 * Works on the HTML render() made - every text in it is escaped already, the heading ids are slugs - so the
+	 * headings of a local addition are in it too. A chapter of fewer than $min sections gets none.
+	 */
+	public static function toc(string $html, string $title, int $min = 3) : string
+	{
+		if (!preg_match_all('#<h([23]) id="([^"]*)">(.*?)</h\1>#s', $html, $matches, PREG_SET_ORDER) ||
+			count(array_filter($matches, fn($m) => $m[1] === '2')) < $min)
+		{
+			return $html;
+		}
+		$list = '';
+		$open = false;	// a level-3 list is open below the last level-2 entry
+		foreach ($matches as [, $level, $id, $text])
+		{
+			// strip_tags only removes the <strong>/<code>/<a> of render(): the text stays escaped
+			$entry = '<li><a href="#'.$id.'">'.trim(strip_tags($text)).'</a>';
+			if ($level === '3')
+			{
+				$list .= ($open ? '' : '<ul>').$entry.'</li>';
+				$open = true;
+				continue;
+			}
+			$list .= ($open ? '</ul></li>' : ($list === '' ? '' : '</li>')).$entry;
+			$open = false;
+		}
+		$list .= $open ? '</ul></li>' : '</li>';
+		$toc = '<nav class="egwmanual_toc"><p class="egwmanual_toc_title">'.self::escape($title).'</p><ul>'.$list.'</ul></nav>';
+
+		$section = strpos($html, '<h2 ');
+		if (($quote = strpos($html, '</blockquote>')) !== false && ($section === false || $quote < $section))
+		{
+			$at = $quote + strlen('</blockquote>');
+		}
+		elseif (($h1 = strpos($html, '</h1>')) !== false && ($section === false || $h1 < $section))
+		{
+			$at = $h1 + strlen('</h1>');
+		}
+		else
+		{
+			$at = 0;
+		}
+		return substr($html, 0, $at).$toc.substr($html, $at);
+	}
+
 	public static function escape(string $text) : string
 	{
 		return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');

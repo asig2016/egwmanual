@@ -30,6 +30,14 @@ et2-html.egwmanual_body > * { max-width: 60em; }
 .egwmanual_missing { color: var(--sl-color-danger-700, #b00020); }
 /* text the administrators added to a chapter (<chapter>.append.md of the custom folder) */
 .egwmanual_body section.egwmanual_local { margin: 1em 0; padding: .2em 1em .6em; border-left: 4px solid var(--sl-color-warning-400, #e0a800); background: var(--sl-color-warning-50, #fffbeb); }
+.egwmanual_body nav.egwmanual_toc { margin: .8em 0 1.2em; padding: .4em 1em .5em; border: 1px solid var(--sl-color-neutral-300, #ddd); border-radius: 4px; background: var(--sl-color-neutral-50, #f7f7f7); font-size: .95em; }
+.egwmanual_toc_title { margin: .2em 0 .3em; font-weight: 600; }
+.egwmanual_toc ul { margin: 0; padding-left: 1.2em; }
+.egwmanual_toc > ul { padding-left: .2em; list-style: none; }
+.egwmanual_toc ul ul { list-style: none; padding-left: 1.4em; }
+.egwmanual_toc li { margin: .1em 0; }
+.egwmanual_toc a { text-decoration: none; }
+.egwmanual_toc a:hover { text-decoration: underline; }
 .egwmanual_local_label { margin: .4em 0 0; font-size: .85em; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; color: var(--sl-color-warning-800, #7a5800); }
 .egwmanual_config_help { white-space: normal; color: var(--sl-color-neutral-700, #555); }
 /* the configuration: the summary of the folder layout with the Help button beside it */
