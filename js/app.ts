@@ -12,6 +12,18 @@
 
 import {EgwApp} from '../../api/js/jsapi/egw_app';
 
+/**
+ * The chapters read in the manual's dialog (a phone: EgwFramework.openPopup() opens popups as dialogs of the main
+ * window there) for Back and Forward, the browser's history being the one of the main window
+ */
+const dialogHistory = {urls: [] as string[], index: -1, pending: false};
+
+/**
+ * The manuals already on their way to another chapter: one tap on the chapter list reports the click twice, and
+ * a second dialog of the same template would load into the first one's form and stay blank on top of it
+ */
+const leaving = new WeakSet<object>();
+
 export class EgwmanualApp extends EgwApp
 {
 	constructor()
@@ -30,20 +42,32 @@ export class EgwmanualApp extends EgwApp
 
 		if (_name === 'egwmanual.manual')
 		{
-			// opened from the avatar menu: the manual of the application in front of the opener
-			if (_et2.widgetContainer.getArrayMgr('content').getEntry('ask_opener'))
+			const content = _et2.widgetContainer.getArrayMgr('content');
+			const dialog = this.dialogOf(_et2);
+			if (dialog)
+			{
+				// opened from a menu or a Help button, not by a link of the manual itself: a history of its own
+				if (!dialogHistory.pending)
+				{
+					dialogHistory.urls = [this.chapterUrl(_et2.widgetContainer, {page: content.getEntry('page') || '', lang: content.getEntry('lang') || ''})];
+					dialogHistory.index = 0;
+				}
+				dialogHistory.pending = false;
+			}
+			// opened from the avatar menu: the manual of the application in front of the opener (in a dialog: of
+			// the window it is shown in)
+			if (content.getEntry('ask_opener'))
 			{
 				let active = '';
 				try
 				{
-					active = String(window.opener?.framework?.activeApp?.appName ?? '');
+					active = String((dialog ? window : window.opener)?.framework?.activeApp?.appName ?? '');
 				}
 				catch (e) {}	// an opener of another origin
-				const base = _et2.widgetContainer.getArrayMgr('content').getEntry('page_url_base');
+				const base = content.getEntry('page_url_base');
 				if (/^[a-z0-9_]+$/.test(active) && base)
 				{
-					_et2.skip_close_prompt?.(true);
-					window.location.replace(base + '&app=' + encodeURIComponent(active));
+					this.navigate(_et2, base + '&app=' + encodeURIComponent(active), 'replace');
 					return;
 				}
 			}
@@ -66,10 +90,13 @@ export class EgwmanualApp extends EgwApp
 			tree?.updateComplete?.then(() => this.treeColors(tree));
 			// not the tree's onclick: that gets the tree's value, which a click on an application node does not change
 			tree?.addEventListener('et2-click', (_ev : CustomEvent) => this.treeClick(_ev.detail?.item?.id, tree));
-			// Back from the bfcache shows the tree as it was left, with the clicked chapter selected
-			window.addEventListener('pageshow', (_ev : PageTransitionEvent) =>
+			// Back from the bfcache shows the tree as it was left, with the clicked chapter selected, and the page
+			// may be left again
+			if (!dialog) window.addEventListener('pageshow', (_ev : PageTransitionEvent) =>
 			{
-				if (_ev.persisted && tree) tree.value = tree.getArrayMgr('content').getEntry('page');
+				if (!_ev.persisted) return;
+				leaving.delete(_et2);
+				if (tree) tree.value = tree.getArrayMgr('content').getEntry('page');
 			});
 		}
 	}
@@ -100,7 +127,7 @@ export class EgwmanualApp extends EgwApp
 		const url = this.chapterUrl(_widget, {page: _id, lang: content.getEntry('tree_lang')?.[_id] || content.getEntry('lang')});
 		if (url && _id !== content.getEntry('page'))
 		{
-			this.navigate(_widget, url);
+			this.navigate(_widget.getInstanceManager?.(), url);
 		}
 		return false;
 	}
@@ -120,7 +147,7 @@ export class EgwmanualApp extends EgwApp
 		if (url)
 		{
 			this.positionRemember(_widget.getInstanceManager?.(), content.getEntry('page') || '');
-			this.navigate(_widget, url);
+			this.navigate(_widget.getInstanceManager?.(), url);
 		}
 		return false;
 	}
@@ -236,11 +263,93 @@ export class EgwmanualApp extends EgwApp
 	/**
 	 * Open another chapter: nothing of the window is ever saved, so no "Leave site?" prompt (the language selector
 	 * and the tree count as changed widgets for etemplate2's close prompt)
+	 *
+	 * In a dialog of the main window (a phone) the chapter opens as a new dialog, which replaces this one: loading
+	 * the URL would replace the whole EGroupware window by the bare chapter, without the dialog's bar to close it.
+	 *
+	 * @param _history push: a new chapter read, replace: instead of the current one, none: Back or Forward
 	 */
-	protected navigate(_widget : any, _url : string)
+	protected navigate(_et2 : any, _url : string, _history : 'push' | 'replace' | 'none' = 'push')
 	{
-		_widget.getInstanceManager?.()?.skip_close_prompt?.(true);
-		window.location.href = _url;
+		if (!_et2 || leaving.has(_et2)) return;
+		leaving.add(_et2);
+		_et2.skip_close_prompt?.(true);
+		const dialog : any = this.dialogOf(_et2);
+		if (!dialog)
+		{
+			if (_history === 'replace')
+			{
+				window.location.replace(_url);
+			}
+			else
+			{
+				window.location.href = _url;
+			}
+			return;
+		}
+		if (_history === 'push')
+		{
+			dialogHistory.urls.splice(dialogHistory.index + 1);
+			dialogHistory.urls.push(_url);
+			dialogHistory.index = dialogHistory.urls.length - 1;
+		}
+		else if (_history === 'replace')
+		{
+			dialogHistory.index = Math.max(0, dialogHistory.index);
+			dialogHistory.urls.splice(dialogHistory.index, dialogHistory.urls.length, _url);
+		}
+		dialogHistory.pending = true;
+		// the new dialog's form gets the same id (Etemplate: the template's name) and the template is loaded into
+		// the first form of that id: the old form gives up its id, else the chapter lands in the dialog closed below
+		const form : HTMLElement = _et2.DOMContainer;
+		const id = form.id;
+		form.id = id + '-closing';
+		// the old dialog goes once the new one is there, so the window below does not flash up meanwhile
+		Promise.resolve(this.egw.openPopup(_url, 920, 850, 'egwmanual', 'egwmanual', true, 'yes'))
+			.then(() => dialog.close?.(), () =>
+			{
+				form.id = id;
+				dialogHistory.pending = false;
+				leaving.delete(_et2);
+			});
+	}
+
+	/**
+	 * The dialog the manual is shown in, null in a window of its own
+	 */
+	protected dialogOf(_et2 : any) : HTMLElement | null
+	{
+		return _et2?.DOMContainer?.closest?.('et2-dialog') ?? null;
+	}
+
+	/**
+	 * Back and Forward: the browser's history in a window of its own, the dialog's own one in a dialog
+	 */
+	back(_ev : Event, _widget : any)
+	{
+		return this.historyGo(_widget, -1);
+	}
+
+	forward(_ev : Event, _widget : any)
+	{
+		return this.historyGo(_widget, 1);
+	}
+
+	protected historyGo(_widget : any, _step : number)
+	{
+		const et2 = _widget?.getInstanceManager?.();
+		if (!this.dialogOf(et2))
+		{
+			window.history.go(_step);
+			return false;
+		}
+		const index = dialogHistory.index + _step;
+		if (index >= 0 && index < dialogHistory.urls.length)
+		{
+			dialogHistory.index = index;
+			this.navigate(et2, dialogHistory.urls[index], 'none');
+		}
+		return false;
 	}
 
 	/**

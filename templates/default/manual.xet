@@ -12,8 +12,8 @@
         <row class="dialogHeader">
           <et2-hbox class="egwmanual_nav">
             <et2-button-icon label="Show or hide the chapter list" image="layout-sidebar" noSubmit="true" class="egwmanual_toggle" onclick="app.egwmanual.treeToggle"/>
-            <et2-button-icon label="Back" image="arrow-left" noSubmit="true" statustext="The chapter you came from" onclick="history.back(); return false;"/>
-            <et2-button-icon label="Forward" image="arrow-right" noSubmit="true" onclick="history.forward(); return false;"/>
+            <et2-button-icon label="Back" image="arrow-left" noSubmit="true" statustext="The chapter you came from" onclick="app.egwmanual.back"/>
+            <et2-button-icon label="Forward" image="arrow-right" noSubmit="true" onclick="app.egwmanual.forward"/>
             <et2-description id="title" noLang="1" class="egwmanual_title"/>
             <et2-select id="lang" class="egwmanual_lang" statustext="Language of the manual" noLang="1" onchange="app.egwmanual.langChange"/>
             <et2-textbox id="anchor" type="hidden"/>
